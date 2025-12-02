@@ -1,3 +1,4 @@
+# Ces fonctions servent à réutiliser rapidement la conversion de points dans d’autres modules ou tests sans importer toute la logique de core.py.
 import struct
 def points_to_binary(points):
     """Convertit une liste de tuples (x, y) en flux binaire PointSet."""

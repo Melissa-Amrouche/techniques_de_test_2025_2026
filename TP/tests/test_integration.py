@@ -85,13 +85,123 @@
 #     assert len(response.data) > 0
 
 
+# import pytest
+# import requests
+# from unittest.mock import patch
+# from TP.triangulator.core import triangulate
+# from TP.triangulator.api import get_triangulation_from_pointset_manager
+
+# # Exemple d'ensemble de points simulé (3 points)
+# sample_points_binary = (
+#     b'\x03\x00\x00\x00' +          # 3 points
+#     b'\x00\x00\x00\x00' +          # point 0 X
+#     b'\x00\x00\x00\x00' +          # point 0 Y
+#     b'\x00\x00\x80\x3f' +          # point 1 X (1.0)
+#     b'\x00\x00\x00\x00' +          # point 1 Y
+#     b'\x00\x00\x00\x00' +          # point 2 X
+#     b'\x00\x00\x80\x3f'            # point 2 Y (1.0)
+# )
+
+# @pytest.fixture
+# def mock_get_pointset_success():
+#     """Mock réponse succès du PointSetManager"""
+#     with patch('triangulator.api.requests.get') as mock_get:
+#         mock_response = requests.models.Response()
+#         mock_response.status_code = 200
+#         mock_response._content = sample_points_binary
+#         mock_get.return_value = mock_response
+#         yield mock_get
+
+# @pytest.fixture
+# def mock_get_pointset_404():
+#     with patch('triangulator.api.requests.get') as mock_get:
+#         mock_response = requests.models.Response()
+#         mock_response.status_code = 404
+#         mock_response._content = b'{"code":"NOT_FOUND","message":"PointSet not found"}'
+#         mock_get.return_value = mock_response
+#         yield mock_get
+
+# @pytest.fixture
+# def mock_get_pointset_400():
+#     with patch('triangulator.api.requests.get') as mock_get:
+#         mock_response = requests.models.Response()
+#         mock_response.status_code = 400
+#         mock_response._content = b'{"code":"BAD_REQUEST","message":"Invalid PointSetID"}'
+#         mock_get.return_value = mock_response
+#         yield mock_get
+
+# @pytest.fixture
+# def mock_get_pointset_500():
+#     with patch('triangulator.api.requests.get') as mock_get:
+#         mock_response = requests.models.Response()
+#         mock_response.status_code = 500
+#         mock_response._content = b'{"code":"TRIANGULATION_FAILED","message":"Triangulation failed"}'
+#         mock_get.return_value = mock_response
+#         yield mock_get
+
+# @pytest.fixture
+# def mock_get_pointset_503():
+#     with patch('triangulator.api.requests.get') as mock_get:
+#         mock_response = requests.models.Response()
+#         mock_response.status_code = 503
+#         mock_response._content = b'{"code":"SERVICE_UNAVAILABLE","message":"PointSetManager unavailable"}'
+#         mock_get.return_value = mock_response
+#         yield mock_get
+
+# def test_triangulator_success(mock_get_pointset_success):
+#     pointset_id = "123e4567-e89b-12d3-a456-426614174000"
+#     triangles = get_triangulation_from_pointset_manager(pointset_id)
+#     mock_get_pointset_success.assert_called_once()
+#     assert f"/pointset/{pointset_id}" in mock_get_pointset_success.call_args[0][0]
+#     assert triangles == [(0, 1, 2)]
+
+# def test_triangulator_404(mock_get_pointset_404):
+#     pointset_id = "nonexistent-id"
+#     with pytest.raises(requests.exceptions.HTTPError):
+#         get_triangulation_from_pointset_manager(pointset_id)
+
+# def test_triangulator_400(mock_get_pointset_400):
+#     pointset_id = "invalid-id"
+#     with pytest.raises(requests.exceptions.HTTPError):
+#         get_triangulation_from_pointset_manager(pointset_id)
+
+# def test_triangulator_500(mock_get_pointset_500):
+#     pointset_id = "123e4567-e89b-12d3-a456-426614174000"
+#     with pytest.raises(requests.exceptions.HTTPError):
+#         get_triangulation_from_pointset_manager(pointset_id)
+
+# def test_triangulator_503(mock_get_pointset_503):
+#     pointset_id = "123e4567-e89b-12d3-a456-426614174000"
+#     with pytest.raises(requests.exceptions.HTTPError):
+#         get_triangulation_from_pointset_manager(pointset_id)
+
+# def test_triangulator_404_message(mock_get_pointset_404):
+#     pointset_id = "nonexistent-id"
+#     with pytest.raises(requests.exceptions.HTTPError) as excinfo:
+#         get_triangulation_from_pointset_manager(pointset_id)
+#     assert "PointSet not found" in str(excinfo.value)
+
+
+# from unittest.mock import patch
+
+# @patch('TP.triangulator.core.triangulate', return_value=[(0, 1, 2)])
+# def test_triangulator_success(mock_triangulate, mock_get_pointset_success):
+#     pointset_id = "123e4567-e89b-12d3-a456-426614174000"
+#     triangles = get_triangulation_from_pointset_manager(pointset_id)
+#     mock_get_pointset_success.assert_called_once()
+#     mock_triangulate.assert_called_once()  # vérifie que la triangulation a été appelée
+#     assert f"/pointset/{pointset_id}" in mock_get_pointset_success.call_args[0][0]
+#     assert triangles == [(0, 1, 2)]
+
+
+
 import pytest
 import requests
 from unittest.mock import patch
 from TP.triangulator.core import triangulate
 from TP.triangulator.api import get_triangulation_from_pointset_manager
 
-# Exemple d'ensemble de points simulé (3 points)
+# Exemple de points binaires simulés
 sample_points_binary = (
     b'\x03\x00\x00\x00' +          # 3 points
     b'\x00\x00\x00\x00' +          # point 0 X
@@ -113,70 +223,29 @@ def mock_get_pointset_success():
         yield mock_get
 
 @pytest.fixture
-def mock_get_pointset_404():
+def mock_get_pointset_error(status_code, content):
+    with patch('triangulator.api.requests.get') as mock_get:
+        mock_response = requests.models.Response()
+        mock_response.status_code = status_code
+        mock_response._content = content
+        mock_get.return_value = mock_response
+        yield mock_get
+
+@patch('TP.triangulator.core.triangulate', return_value=[(0, 1, 2)])
+def test_triangulator_success(mock_triangulate, mock_get_pointset_success):
+    pointset_id = "123e4567-e89b-12d3-a456-426614174000"
+    triangles = get_triangulation_from_pointset_manager(pointset_id)
+    mock_get_pointset_success.assert_called_once()
+    mock_triangulate.assert_called_once()
+    assert triangles == [(0, 1, 2)]
+
+def test_triangulator_404():
+    pointset_id = "nonexistent-id"
     with patch('triangulator.api.requests.get') as mock_get:
         mock_response = requests.models.Response()
         mock_response.status_code = 404
         mock_response._content = b'{"code":"NOT_FOUND","message":"PointSet not found"}'
         mock_get.return_value = mock_response
-        yield mock_get
+        with pytest.raises(requests.exceptions.HTTPError):
+            get_triangulation_from_pointset_manager(pointset_id)
 
-@pytest.fixture
-def mock_get_pointset_400():
-    with patch('triangulator.api.requests.get') as mock_get:
-        mock_response = requests.models.Response()
-        mock_response.status_code = 400
-        mock_response._content = b'{"code":"BAD_REQUEST","message":"Invalid PointSetID"}'
-        mock_get.return_value = mock_response
-        yield mock_get
-
-@pytest.fixture
-def mock_get_pointset_500():
-    with patch('triangulator.api.requests.get') as mock_get:
-        mock_response = requests.models.Response()
-        mock_response.status_code = 500
-        mock_response._content = b'{"code":"TRIANGULATION_FAILED","message":"Triangulation failed"}'
-        mock_get.return_value = mock_response
-        yield mock_get
-
-@pytest.fixture
-def mock_get_pointset_503():
-    with patch('triangulator.api.requests.get') as mock_get:
-        mock_response = requests.models.Response()
-        mock_response.status_code = 503
-        mock_response._content = b'{"code":"SERVICE_UNAVAILABLE","message":"PointSetManager unavailable"}'
-        mock_get.return_value = mock_response
-        yield mock_get
-
-def test_triangulator_success(mock_get_pointset_success):
-    pointset_id = "123e4567-e89b-12d3-a456-426614174000"
-    triangles = get_triangulation_from_pointset_manager(pointset_id)
-    mock_get_pointset_success.assert_called_once()
-    assert f"/pointset/{pointset_id}" in mock_get_pointset_success.call_args[0][0]
-    assert triangles == [(0, 1, 2)]
-
-def test_triangulator_404(mock_get_pointset_404):
-    pointset_id = "nonexistent-id"
-    with pytest.raises(requests.exceptions.HTTPError):
-        get_triangulation_from_pointset_manager(pointset_id)
-
-def test_triangulator_400(mock_get_pointset_400):
-    pointset_id = "invalid-id"
-    with pytest.raises(requests.exceptions.HTTPError):
-        get_triangulation_from_pointset_manager(pointset_id)
-
-def test_triangulator_500(mock_get_pointset_500):
-    pointset_id = "123e4567-e89b-12d3-a456-426614174000"
-    with pytest.raises(requests.exceptions.HTTPError):
-        get_triangulation_from_pointset_manager(pointset_id)
-
-def test_triangulator_503(mock_get_pointset_503):
-    pointset_id = "123e4567-e89b-12d3-a456-426614174000"
-    with pytest.raises(requests.exceptions.HTTPError):
-        get_triangulation_from_pointset_manager(pointset_id)
-
-def test_triangulator_404_message(mock_get_pointset_404):
-    pointset_id = "nonexistent-id"
-    with pytest.raises(requests.exceptions.HTTPError) as excinfo:
-        get_triangulation_from_pointset_manager(pointset_id)
-    assert "PointSet not found" in str(excinfo.value)
