@@ -10,3 +10,12 @@ __pycache__/
 *.pyo
 *.pyd
 .Python
+
+# Caches des outils de test et qualité
+.pytest_cache/
+.ruff_cache/
+
+# Fichiers système macOS
+.DS_Store
+.AppleDouble
+.LSOverride

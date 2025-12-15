@@ -1,19 +1,23 @@
-# Ces fonctions servent à réutiliser rapidement la conversion de points dans d’autres modules ou tests sans importer toute la logique de core.py.
+"""Utility functions for binary conversion of point sets."""
+
 import struct
+
+
 def points_to_binary(points):
-    """Convertit une liste de tuples (x, y) en flux binaire PointSet."""
+    """Convert a list of (x, y) tuples to binary PointSet format."""
     n = len(points)
-    data = struct.pack("I", n)  # nombre de points, unsigned long (4 octets)
+    data = struct.pack("I", n)
     for x, y in points:
-        data += struct.pack("ff", x, y)  # 4 octets float pour X et Y
+        data += struct.pack("ff", x, y)
     return data
 
+
 def binary_to_points(binary_data):
-    """Convertit un flux binaire PointSet en liste de points (x, y)."""
+    """Convert binary PointSet data to a list of (x, y) points."""
     n = struct.unpack("I", binary_data[:4])[0]
     points = []
     for i in range(n):
-        offset = 4 + i*8  # 8 octets par point
-        x, y = struct.unpack("ff", binary_data[offset:offset+8])
+        offset = 4 + i * 8
+        x, y = struct.unpack("ff", binary_data[offset : offset + 8])
         points.append((x, y))
     return points

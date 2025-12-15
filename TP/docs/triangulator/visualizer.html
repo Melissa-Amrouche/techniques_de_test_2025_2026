@@ -1,0 +1,477 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1">
+<meta name="generator" content="pdoc3 0.11.6">
+<title>triangulator.visualizer API documentation</title>
+<meta name="description" content="Visualisation de l&#39;algorithme de triangulation de Delaunay …">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/13.0.0/sanitize.min.css" integrity="sha512-y1dtMcuvtTMJc1yPgEqF0ZjQbhnc/bFhyvIyVNb9Zk5mIGtqVaAB1Ttl28su8AvFMOY0EwRbAe+HCLqj6W7/KA==" crossorigin>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/13.0.0/typography.min.css" integrity="sha512-Y1DYSb995BAfxobCkKepB1BqJJTPrOp3zPL74AWFugHHmmdcvO+C48WLrUOlhGMc0QG7AE3f7gmvvcrmX2fDoA==" crossorigin>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/default.min.css" crossorigin>
+<style>:root{--highlight-color:#fe9}.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:1.5em;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:2em 0 .50em 0}h3{font-size:1.4em;margin:1.6em 0 .7em 0}h4{margin:0;font-size:105%}h1:target,h2:target,h3:target,h4:target,h5:target,h6:target{background:var(--highlight-color);padding:.2em 0}a{color:#058;text-decoration:none;transition:color .2s ease-in-out}a:visited{color:#503}a:hover{color:#b62}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900;font-weight:bold}pre code{font-size:.8em;line-height:1.4em;padding:1em;display:block}code{background:#f3f3f3;font-family:"DejaVu Sans Mono",monospace;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}dt:target .name{background:var(--highlight-color)}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source > summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible;min-width:max-content}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}td{padding:0 .5em}.admonition{padding:.1em 1em;margin:1em 0}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul ul{padding-left:1em}.toc > ul > li{margin-top:.5em}}</style>
+<style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js" integrity="sha512-D9gUyxqja7hBtkWpPWGt9wfbfaMGVt9gnyCvYa+jojwwPHLCzUm5i8rpk7vD7wNee9bA35eYIjobYPaQuKS1MQ==" crossorigin></script>
+<script>window.addEventListener('DOMContentLoaded', () => {
+hljs.configure({languages: ['bash', 'css', 'diff', 'graphql', 'ini', 'javascript', 'json', 'plaintext', 'python', 'python-repl', 'rust', 'shell', 'sql', 'typescript', 'xml', 'yaml']});
+hljs.highlightAll();
+/* Collapse source docstrings */
+setTimeout(() => {
+[...document.querySelectorAll('.hljs.language-python > .hljs-string')]
+.filter(el => el.innerHTML.length > 200 && ['"""', "'''"].includes(el.innerHTML.substring(0, 3)))
+.forEach(el => {
+let d = document.createElement('details');
+d.classList.add('hljs-string');
+d.innerHTML = '<summary>"""</summary>' + el.innerHTML.substring(3);
+el.replaceWith(d);
+});
+}, 100);
+})</script>
+</head>
+<body>
+<main>
+<article id="content">
+<header>
+<h1 class="title">Module <code>triangulator.visualizer</code></h1>
+</header>
+<section id="section-intro">
+<p>Visualisation de l'algorithme de triangulation de Delaunay.</p>
+<p>Ce module permet de créer des visualisations étape par étape de l'algorithme
+de Bowyer-Watson pour la triangulation de Delaunay.</p>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-functions">Functions</h2>
+<dl>
+<dt id="triangulator.visualizer.animate_delaunay"><code class="name flex">
+<span>def <span class="ident">animate_delaunay</span></span>(<span>points: List[Tuple[float, float]],<br>output_folder: str = 'output',<br>create_video: bool = True,<br>video_name: str = 'delaunay_animation.mp4',<br>fps: int = 2) ‑> List[str]</span>
+</code></dt>
+<dd>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def animate_delaunay(
+    points: List[Tuple[float, float]],
+    output_folder: str = &#34;output&#34;,
+    create_video: bool = True,
+    video_name: str = &#34;delaunay_animation.mp4&#34;,
+    fps: int = 2
+) -&gt; List[str]:
+    &#34;&#34;&#34;Génère une animation complète de la triangulation de Delaunay.
+
+    Cette fonction réimplémente l&#39;algorithme de Bowyer-Watson en capturant
+    chaque étape pour créer une animation vidéo.
+
+    Args:
+        points: Liste des points à trianguler (tuples (x, y)).
+        output_folder: Dossier où sauvegarder les frames.
+        create_video: Si True, crée une vidéo MP4 à partir des frames.
+        video_name: Nom du fichier vidéo (si create_video=True).
+        fps: Nombre de frames par seconde pour la vidéo.
+
+    Returns:
+        Liste des chemins des fichiers de frames générées.
+
+    Raises:
+        ValueError: Si moins de 3 points.
+    &#34;&#34;&#34;
+    if len(points) &lt; 3:
+        raise ValueError(&#34;Au moins 3 points nécessaires&#34;)
+
+    # Créer le dossier de sortie
+    output_path = Path(output_folder)
+    output_path.mkdir(parents=True, exist_ok=True)
+
+    frame_paths = []
+    frame_count = 0
+
+    def save_frame(description: str, **kwargs):
+        &#34;&#34;&#34;Sauvegarde une frame avec les paramètres donnés.&#34;&#34;&#34;
+        nonlocal frame_count
+        frame_path = output_path / f&#34;frame_{frame_count:03d}.png&#34;
+        visualize_delaunay_step(
+            all_points=all_points,
+            triangles=triangles,
+            step_description=f&#34;Étape {frame_count}: {description}&#34;,
+            output_path=str(frame_path),
+            **kwargs
+        )
+        frame_paths.append(str(frame_path))
+        frame_count += 1
+
+    # Fonctions utilitaires (copiées de core.py)
+    def circumcircle(p1, p2, p3):
+        &#34;&#34;&#34;Calcule le centre et le rayon du cercle circonscrit.&#34;&#34;&#34;
+        x1, y1 = p1
+        x2, y2 = p2
+        x3, y3 = p3
+
+        d = 2 * (x1 * (y2 - y3) + x2 * (y3 - y1) + x3 * (y1 - y2))
+        if abs(d) &lt; 1e-10:
+            return None, float(&#39;inf&#39;)
+
+        ux = (
+            (x1*x1 + y1*y1) * (y2 - y3) +
+            (x2*x2 + y2*y2) * (y3 - y1) +
+            (x3*x3 + y3*y3) * (y1 - y2)
+        ) / d
+        uy = (
+            (x1*x1 + y1*y1) * (x3 - x2) +
+            (x2*x2 + y2*y2) * (x1 - x3) +
+            (x3*x3 + y3*y3) * (x2 - x1)
+        ) / d
+
+        radius = math.sqrt((x1 - ux)**2 + (y1 - uy)**2)
+        return (ux, uy), radius
+
+    def in_circumcircle(point, triangle_points):
+        &#34;&#34;&#34;Vérifie si un point est dans le cercle circonscrit.&#34;&#34;&#34;
+        center, radius = circumcircle(*triangle_points)
+        if center is None:
+            return False
+        px, py = point
+        cx, cy = center
+        dist = math.sqrt((px - cx)**2 + (py - cy)**2)
+        return dist &lt; radius - 1e-10
+
+    # Créer le super-triangle
+    min_x = min(p[0] for p in points)
+    min_y = min(p[1] for p in points)
+    max_x = max(p[0] for p in points)
+    max_y = max(p[1] for p in points)
+
+    dx = max_x - min_x
+    dy = max_y - min_y
+    delta_max = max(dx, dy)
+    mid_x = (min_x + max_x) / 2
+    mid_y = (min_y + max_y) / 2
+
+    super_triangle = [
+        (mid_x - 20 * delta_max, mid_y - delta_max),
+        (mid_x, mid_y + 20 * delta_max),
+        (mid_x + 20 * delta_max, mid_y - delta_max)
+    ]
+
+    all_points = list(points) + super_triangle
+    n = len(points)
+
+    # Initialiser avec le super-triangle
+    triangles = [(n, n+1, n+2)]
+
+    # Frame 0: État initial avec le super-triangle
+    save_frame(
+        &#34;Initialisation avec le super-triangle&#34;,
+        current_point_idx=None
+    )
+
+    # Ajouter chaque point un par un
+    for i in range(n):
+        point = points[i]
+
+        # Frame: Montrer le point à ajouter
+        save_frame(
+            f&#34;Ajout du point {i}: {point}&#34;,
+            current_point_idx=i
+        )
+
+        bad_triangles = []
+        circles = []
+
+        # Trouver les bad triangles
+        for tri in triangles:
+            tri_points = [all_points[tri[0]], all_points[tri[1]], all_points[tri[2]]]
+            center, radius = circumcircle(*tri_points)
+
+            if in_circumcircle(point, tri_points):
+                bad_triangles.append(tri)
+                if center is not None:
+                    circles.append((center, radius))
+
+        # Frame: Montrer les bad triangles et leurs cercles
+        if bad_triangles:
+            save_frame(
+                f&#34;Triangles invalidés par le point {i} (cercle circonscrit)&#34;,
+                current_point_idx=i,
+                bad_triangles=bad_triangles,
+                circumcircles=circles
+            )
+
+        # Trouver le polygone
+        polygon = []
+        for tri in bad_triangles:
+            for j in range(3):
+                edge = (tri[j], tri[(j+1) % 3])
+
+                edge_shared = False
+                for other_tri in bad_triangles:
+                    if other_tri == tri:
+                        continue
+                    if edge[0] in other_tri and edge[1] in other_tri:
+                        edge_shared = True
+                        break
+
+                reverse_edge = (edge[1], edge[0])
+                if not edge_shared and reverse_edge not in polygon:
+                    polygon.append(edge)
+
+        # Frame: Montrer le polygone
+        if polygon:
+            save_frame(
+                f&#34;Polygone formé par les arêtes externes&#34;,
+                current_point_idx=i,
+                bad_triangles=bad_triangles,
+                polygon=polygon
+            )
+
+        # Retirer les bad triangles
+        for tri in bad_triangles:
+            triangles.remove(tri)
+
+        # Créer de nouveaux triangles
+        new_triangles = []
+        for edge in polygon:
+            new_tri = (edge[0], edge[1], i)
+            triangles.append(new_tri)
+            new_triangles.append(new_tri)
+
+        # Frame: Montrer les nouveaux triangles
+        save_frame(
+            f&#34;Nouveaux triangles créés avec le point {i}&#34;,
+            current_point_idx=i
+        )
+
+    # Retirer le super-triangle
+    final_triangles = []
+    for tri in triangles:
+        if all(idx &lt; n for idx in tri):
+            final_triangles.append(tri)
+
+    # Frame finale: Triangulation complète
+    save_frame(
+        &#34;Triangulation de Delaunay complète&#34;,
+        current_point_idx=None
+    )
+
+    # Créer la vidéo MP4 si demandé
+    if create_video:
+        video_path = output_path / video_name
+        images = [imageio.imread(frame) for frame in frame_paths]
+        imageio.mimsave(str(video_path), images, fps=fps, codec=&#39;libx264&#39;, quality=8)
+        print(f&#34;Vidéo créée: {video_path}&#34;)
+        print(f&#34;   Format: MP4, {fps} FPS, {len(images)} frames&#34;)
+
+    print(f&#34;{len(frame_paths)} frames générées dans {output_folder}/&#34;)
+    return frame_paths</code></pre>
+</details>
+<div class="desc"><p>Génère une animation complète de la triangulation de Delaunay.</p>
+<p>Cette fonction réimplémente l'algorithme de Bowyer-Watson en capturant
+chaque étape pour créer une animation vidéo.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>points</code></strong></dt>
+<dd>Liste des points à trianguler (tuples (x, y)).</dd>
+<dt><strong><code>output_folder</code></strong></dt>
+<dd>Dossier où sauvegarder les frames.</dd>
+<dt><strong><code>create_video</code></strong></dt>
+<dd>Si True, crée une vidéo MP4 à partir des frames.</dd>
+<dt><strong><code>video_name</code></strong></dt>
+<dd>Nom du fichier vidéo (si create_video=True).</dd>
+<dt><strong><code>fps</code></strong></dt>
+<dd>Nombre de frames par seconde pour la vidéo.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<p>Liste des chemins des fichiers de frames générées.</p>
+<h2 id="raises">Raises</h2>
+<dl>
+<dt><code>ValueError</code></dt>
+<dd>Si moins de 3 points.</dd>
+</dl></div>
+</dd>
+<dt id="triangulator.visualizer.visualize_delaunay_step"><code class="name flex">
+<span>def <span class="ident">visualize_delaunay_step</span></span>(<span>all_points: List[Tuple[float, float]],<br>triangles: List[Tuple[int, int, int]],<br>current_point_idx: int | None = None,<br>bad_triangles: List[Tuple[int, int, int]] | None = None,<br>polygon: List[Tuple[int, int]] | None = None,<br>circumcircles: List[Tuple[Tuple[float, float], float]] | None = None,<br>step_description: str = '',<br>output_path: str = 'frame.png')</span>
+</code></dt>
+<dd>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def visualize_delaunay_step(
+    all_points: List[Tuple[float, float]],
+    triangles: List[Tuple[int, int, int]],
+    current_point_idx: Optional[int] = None,
+    bad_triangles: Optional[List[Tuple[int, int, int]]] = None,
+    polygon: Optional[List[Tuple[int, int]]] = None,
+    circumcircles: Optional[List[Tuple[Tuple[float, float], float]]] = None,
+    step_description: str = &#34;&#34;,
+    output_path: str = &#34;frame.png&#34;
+):
+    &#34;&#34;&#34;Visualise une étape de l&#39;algorithme de Delaunay.
+
+    Args:
+        all_points: Liste de tous les points (incluant le super-triangle).
+        triangles: Liste des triangles actuels (tuples d&#39;indices).
+        current_point_idx: Indice du point en cours d&#39;ajout (ou None).
+        bad_triangles: Liste des triangles &#34;mauvais&#34; à retirer (en rouge).
+        polygon: Liste des arêtes du polygone (tuples d&#39;indices).
+        circumcircles: Liste des cercles circonscrits à dessiner (centre, rayon).
+        step_description: Description textuelle de l&#39;étape.
+        output_path: Chemin du fichier de sortie pour l&#39;image.
+    &#34;&#34;&#34;
+    fig, ax = plt.subplots(figsize=(12, 10))
+
+    # Déterminer les limites du graphique
+    if all_points:
+        xs = [p[0] for p in all_points]
+        ys = [p[1] for p in all_points]
+        margin = 0.5
+        ax.set_xlim(min(xs) - margin, max(xs) + margin)
+        ax.set_ylim(min(ys) - margin, max(ys) + margin)
+
+    # Dessiner les triangles &#34;mauvais&#34; en premier (en rouge)
+    if bad_triangles:
+        for tri in bad_triangles:
+            triangle_points = [all_points[tri[0]], all_points[tri[1]], all_points[tri[2]]]
+            triangle_patch = patches.Polygon(
+                triangle_points,
+                closed=True,
+                fill=True,
+                facecolor=&#39;red&#39;,
+                alpha=0.2,
+                edgecolor=&#39;red&#39;,
+                linewidth=2,
+                linestyle=&#39;--&#39;
+            )
+            ax.add_patch(triangle_patch)
+
+    # Dessiner les triangles normaux
+    if triangles:
+        for tri in triangles:
+            # Ne pas redessiner les bad_triangles
+            if bad_triangles and tri in bad_triangles:
+                continue
+
+            triangle_points = [all_points[tri[0]], all_points[tri[1]], all_points[tri[2]]]
+            triangle_patch = patches.Polygon(
+                triangle_points,
+                closed=True,
+                fill=True,
+                facecolor=&#39;lightblue&#39;,
+                alpha=0.3,
+                edgecolor=&#39;blue&#39;,
+                linewidth=1.5
+            )
+            ax.add_patch(triangle_patch)
+
+    # Dessiner les cercles circonscrits
+    if circumcircles:
+        for center, radius in circumcircles:
+            circle = patches.Circle(
+                center,
+                radius,
+                fill=False,
+                edgecolor=&#39;purple&#39;,
+                linewidth=1,
+                linestyle=&#39;:&#39;,
+                alpha=0.6
+            )
+            ax.add_patch(circle)
+
+    # Dessiner le polygone
+    if polygon:
+        for edge in polygon:
+            p1 = all_points[edge[0]]
+            p2 = all_points[edge[1]]
+            ax.plot(
+                [p1[0], p2[0]],
+                [p1[1], p2[1]],
+                &#39;g-&#39;,
+                linewidth=3,
+                alpha=0.8,
+                label=&#39;Polygone&#39; if edge == polygon[0] else &#39;&#39;
+            )
+
+    # Dessiner tous les points
+    for i, (x, y) in enumerate(all_points):
+        if current_point_idx is not None and i == current_point_idx:
+            # Point en cours d&#39;ajout (en rouge, plus gros)
+            ax.plot(x, y, &#39;ro&#39;, markersize=12, label=&#39;Point actuel&#39;, zorder=10)
+        else:
+            # Points normaux
+            ax.plot(x, y, &#39;ko&#39;, markersize=6, zorder=5)
+
+        # Numéroter les points (sauf le super-triangle si trop loin)
+        ax.text(x + 0.1, y + 0.1, str(i), fontsize=8, zorder=6)
+
+    # Titre et description
+    ax.set_title(step_description, fontsize=14, fontweight=&#39;bold&#39;, pad=20)
+    ax.set_xlabel(&#39;X&#39;)
+    ax.set_ylabel(&#39;Y&#39;)
+    ax.grid(True, alpha=0.3)
+    ax.set_aspect(&#39;equal&#39;, adjustable=&#39;box&#39;)
+
+    # Légende
+    handles, labels = ax.get_legend_handles_labels()
+    if handles:
+        by_label = dict(zip(labels, handles))
+        ax.legend(by_label.values(), by_label.keys(), loc=&#39;upper right&#39;)
+
+    # Sauvegarder
+    plt.tight_layout()
+    plt.savefig(output_path, dpi=100, bbox_inches=&#39;tight&#39;)
+    plt.close(fig)</code></pre>
+</details>
+<div class="desc"><p>Visualise une étape de l'algorithme de Delaunay.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>all_points</code></strong></dt>
+<dd>Liste de tous les points (incluant le super-triangle).</dd>
+<dt><strong><code>triangles</code></strong></dt>
+<dd>Liste des triangles actuels (tuples d'indices).</dd>
+<dt><strong><code>current_point_idx</code></strong></dt>
+<dd>Indice du point en cours d'ajout (ou None).</dd>
+<dt><strong><code>bad_triangles</code></strong></dt>
+<dd>Liste des triangles "mauvais" à retirer (en rouge).</dd>
+<dt><strong><code>polygon</code></strong></dt>
+<dd>Liste des arêtes du polygone (tuples d'indices).</dd>
+<dt><strong><code>circumcircles</code></strong></dt>
+<dd>Liste des cercles circonscrits à dessiner (centre, rayon).</dd>
+<dt><strong><code>step_description</code></strong></dt>
+<dd>Description textuelle de l'étape.</dd>
+<dt><strong><code>output_path</code></strong></dt>
+<dd>Chemin du fichier de sortie pour l'image.</dd>
+</dl></div>
+</dd>
+</dl>
+</section>
+<section>
+</section>
+</article>
+<nav id="sidebar">
+<div class="toc">
+<ul></ul>
+</div>
+<ul id="index">
+<li><h3>Super-module</h3>
+<ul>
+<li><code><a title="triangulator" href="index.html">triangulator</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-functions">Functions</a></h3>
+<ul class="">
+<li><code><a title="triangulator.visualizer.animate_delaunay" href="#triangulator.visualizer.animate_delaunay">animate_delaunay</a></code></li>
+<li><code><a title="triangulator.visualizer.visualize_delaunay_step" href="#triangulator.visualizer.visualize_delaunay_step">visualize_delaunay_step</a></code></li>
+</ul>
+</li>
+</ul>
+</nav>
+</main>
+<footer id="footer">
+<p>Generated by <a href="https://pdoc3.github.io/pdoc" title="pdoc: Python API documentation generator"><cite>pdoc</cite> 0.11.6</a>.</p>
+</footer>
+</body>
+</html>

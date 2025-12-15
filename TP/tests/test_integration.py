@@ -1,251 +1,162 @@
-# import pytest
-# import requests
-# from unittest.mock import patch
-# from triangulator.core import triangulate
-# from triangulator.api import get_triangulation_from_pointset_manager
-
-# # Juste pour mieux comprendre
-# # Exemple d'ensemble de points simulé
-# sample_points_binary = (
-#     b'\x03\x00\x00\x00' +          # 3 points
-#     b'\x00\x00\x00\x00' +          # point 0 X
-#     b'\x00\x00\x00\x00' +          # point 0 Y
-#     b'\x00\x00\x80\x3f' +          # point 1 X (1.0)
-#     b'\x00\x00\x00\x00' +          # point 1 Y
-#     b'\x00\x00\x00\x00' +          # point 2 X
-#     b'\x00\x00\x80\x3f'            # point 2 Y (1.0)
-# )
-
-# @pytest.fixture
-# def mock_get_pointset():
-#     """Mock de la récupération du PointSet via HTTP GET"""
-#     with patch('triangulator.api.requests.get') as mock_get:
-#         mock_response = requests.models.Response()
-#         mock_response.status_code = 200
-#         mock_response._content = sample_points_binary
-#         mock_get.return_value = mock_response
-#         yield mock_get
-
-# def test_triangulator_integration(mock_get_pointset):
-#     pointset_id = "123e4567-e89b-12d3-a456-426614174000"
-    
-#     triangles = get_triangulation_from_pointset_manager(pointset_id)
-    
-#     # Vérifier que la fonction appelle le bon endpoint
-#     mock_get_pointset.assert_called_once()
-#     assert f"/pointset/{pointset_id}" in mock_get_pointset.call_args[0][0]
-    
-#     # Vérifier le résultat de triangulation attendu
-#     expected_triangles = [(0, 1, 2)]
-#     assert triangles == expected_triangles
-
-
-# import pytest
-# from unittest.mock import patch, MagicMock
-# from triangulator.core import triangulate, bytes_to_pointset, triangles_to_bytes
-# from triangulator.api import app  
-
-# # Exemple de PointSet simulé
-# dummy_points = [(0,0), (1,0), (0,1)]
-# dummy_binary = triangles_to_bytes(dummy_points, triangulate(dummy_points))
-
-# @pytest.fixture
-# def client():
-#     app.config['TESTING'] = True
-#     with app.test_client() as client:
-#         yield client
-
-# def mock_get_pointset(url, *args, **kwargs):
-#     """
-#     Fonction pour simuler la réponse HTTP GET du PointSetManager
-#     """
-#     class MockResponse:
-#         def __init__(self, content, status_code=200):
-#             self.content = content
-#             self.status_code = status_code
-#         def raise_for_status(self):
-#             if self.status_code >= 400:
-#                 raise Exception(f"HTTP error {self.status_code}")
-#     return MockResponse(content=bytes([0,0,0,3,0,0,0,0,0,0,0,0,0,0,128,63,0,0,0,0]))  # exemple simple
-
-# @patch('triangulator.api.requests.get', side_effect=mock_get_pointset)
-# def test_triangulator_integration(mock_get, client):
-#     # On simule la requête GET /triangulation/<pointSetId>
-#     pointset_id = "123e4567-e89b-12d3-a456-426614174000"
-#     response = client.get(f'/triangulation/{pointset_id}')
-
-#     # Vérifie que le Triangulator a appelé le bon endpoint
-#     mock_get.assert_called_once()
-
-#     # Vérifie le code HTTP de la réponse
-#     assert response.status_code == 200
-
-#     # Vérifie que la réponse est en binaire et non vide
-#     assert response.data is not None
-#     assert len(response.data) > 0
-
-
-# import pytest
-# import requests
-# from unittest.mock import patch
-# from TP.triangulator.core import triangulate
-# from TP.triangulator.api import get_triangulation_from_pointset_manager
-
-# # Exemple d'ensemble de points simulé (3 points)
-# sample_points_binary = (
-#     b'\x03\x00\x00\x00' +          # 3 points
-#     b'\x00\x00\x00\x00' +          # point 0 X
-#     b'\x00\x00\x00\x00' +          # point 0 Y
-#     b'\x00\x00\x80\x3f' +          # point 1 X (1.0)
-#     b'\x00\x00\x00\x00' +          # point 1 Y
-#     b'\x00\x00\x00\x00' +          # point 2 X
-#     b'\x00\x00\x80\x3f'            # point 2 Y (1.0)
-# )
-
-# @pytest.fixture
-# def mock_get_pointset_success():
-#     """Mock réponse succès du PointSetManager"""
-#     with patch('triangulator.api.requests.get') as mock_get:
-#         mock_response = requests.models.Response()
-#         mock_response.status_code = 200
-#         mock_response._content = sample_points_binary
-#         mock_get.return_value = mock_response
-#         yield mock_get
-
-# @pytest.fixture
-# def mock_get_pointset_404():
-#     with patch('triangulator.api.requests.get') as mock_get:
-#         mock_response = requests.models.Response()
-#         mock_response.status_code = 404
-#         mock_response._content = b'{"code":"NOT_FOUND","message":"PointSet not found"}'
-#         mock_get.return_value = mock_response
-#         yield mock_get
-
-# @pytest.fixture
-# def mock_get_pointset_400():
-#     with patch('triangulator.api.requests.get') as mock_get:
-#         mock_response = requests.models.Response()
-#         mock_response.status_code = 400
-#         mock_response._content = b'{"code":"BAD_REQUEST","message":"Invalid PointSetID"}'
-#         mock_get.return_value = mock_response
-#         yield mock_get
-
-# @pytest.fixture
-# def mock_get_pointset_500():
-#     with patch('triangulator.api.requests.get') as mock_get:
-#         mock_response = requests.models.Response()
-#         mock_response.status_code = 500
-#         mock_response._content = b'{"code":"TRIANGULATION_FAILED","message":"Triangulation failed"}'
-#         mock_get.return_value = mock_response
-#         yield mock_get
-
-# @pytest.fixture
-# def mock_get_pointset_503():
-#     with patch('triangulator.api.requests.get') as mock_get:
-#         mock_response = requests.models.Response()
-#         mock_response.status_code = 503
-#         mock_response._content = b'{"code":"SERVICE_UNAVAILABLE","message":"PointSetManager unavailable"}'
-#         mock_get.return_value = mock_response
-#         yield mock_get
-
-# def test_triangulator_success(mock_get_pointset_success):
-#     pointset_id = "123e4567-e89b-12d3-a456-426614174000"
-#     triangles = get_triangulation_from_pointset_manager(pointset_id)
-#     mock_get_pointset_success.assert_called_once()
-#     assert f"/pointset/{pointset_id}" in mock_get_pointset_success.call_args[0][0]
-#     assert triangles == [(0, 1, 2)]
-
-# def test_triangulator_404(mock_get_pointset_404):
-#     pointset_id = "nonexistent-id"
-#     with pytest.raises(requests.exceptions.HTTPError):
-#         get_triangulation_from_pointset_manager(pointset_id)
-
-# def test_triangulator_400(mock_get_pointset_400):
-#     pointset_id = "invalid-id"
-#     with pytest.raises(requests.exceptions.HTTPError):
-#         get_triangulation_from_pointset_manager(pointset_id)
-
-# def test_triangulator_500(mock_get_pointset_500):
-#     pointset_id = "123e4567-e89b-12d3-a456-426614174000"
-#     with pytest.raises(requests.exceptions.HTTPError):
-#         get_triangulation_from_pointset_manager(pointset_id)
-
-# def test_triangulator_503(mock_get_pointset_503):
-#     pointset_id = "123e4567-e89b-12d3-a456-426614174000"
-#     with pytest.raises(requests.exceptions.HTTPError):
-#         get_triangulation_from_pointset_manager(pointset_id)
-
-# def test_triangulator_404_message(mock_get_pointset_404):
-#     pointset_id = "nonexistent-id"
-#     with pytest.raises(requests.exceptions.HTTPError) as excinfo:
-#         get_triangulation_from_pointset_manager(pointset_id)
-#     assert "PointSet not found" in str(excinfo.value)
-
-
-# from unittest.mock import patch
-
-# @patch('TP.triangulator.core.triangulate', return_value=[(0, 1, 2)])
-# def test_triangulator_success(mock_triangulate, mock_get_pointset_success):
-#     pointset_id = "123e4567-e89b-12d3-a456-426614174000"
-#     triangles = get_triangulation_from_pointset_manager(pointset_id)
-#     mock_get_pointset_success.assert_called_once()
-#     mock_triangulate.assert_called_once()  # vérifie que la triangulation a été appelée
-#     assert f"/pointset/{pointset_id}" in mock_get_pointset_success.call_args[0][0]
-#     assert triangles == [(0, 1, 2)]
-
-
-
 import pytest
 import requests
 from unittest.mock import patch
+from TP.triangulator.api import create_app
 from TP.triangulator.core import triangulate
-from TP.triangulator.api import get_triangulation_from_pointset_manager
 
-# Exemple de points binaires simulés
+# Exemple de points binaires simulés (format big-endian)
+# 3 points: (0.0, 0.0), (1.0, 0.0), (0.0, 1.0)
 sample_points_binary = (
-    b'\x03\x00\x00\x00' +          # 3 points
-    b'\x00\x00\x00\x00' +          # point 0 X
-    b'\x00\x00\x00\x00' +          # point 0 Y
-    b'\x00\x00\x80\x3f' +          # point 1 X (1.0)
-    b'\x00\x00\x00\x00' +          # point 1 Y
-    b'\x00\x00\x00\x00' +          # point 2 X
-    b'\x00\x00\x80\x3f'            # point 2 Y (1.0)
+    b'\x00\x00\x00\x03' +          # 3 points (big-endian uint32)
+    b'\x00\x00\x00\x00' +          # point 0 X (0.0)
+    b'\x00\x00\x00\x00' +          # point 0 Y (0.0)
+    b'\x3f\x80\x00\x00' +          # point 1 X (1.0 in big-endian float)
+    b'\x00\x00\x00\x00' +          # point 1 Y (0.0)
+    b'\x00\x00\x00\x00' +          # point 2 X (0.0)
+    b'\x3f\x80\x00\x00'            # point 2 Y (1.0 in big-endian float)
 )
 
 @pytest.fixture
-def mock_get_pointset_success():
-    """Mock réponse succès du PointSetManager"""
-    with patch('triangulator.api.requests.get') as mock_get:
+def client():
+    """Fixture Flask client for integration tests"""
+    # Créer un client HTTP Flask utilisable
+    app = create_app()
+    # met Flask en mode test
+    app.config['TESTING'] = True
+    # crée un faux navigateur HTTP
+    with app.test_client() as client:
+        # retourne ce client aux tests
+        yield client
+# Chaque test qui reçoit client client.get("/triangulation/...") sans serveur, sans réseau, sans port
+
+@pytest.fixture
+def mock_pointset_manager_success():
+    """Mock successful response from PointSetManager"""
+    # emplace temporairement requests.get par une fausse fonction suivante : 
+    with patch('TP.triangulator.api.requests.get') as mock_get:
+        # crée une fausse réponse HTTP
         mock_response = requests.models.Response()
+        # pour dire “tout va bien”
         mock_response.status_code = 200
+        # met les points binaires
         mock_response._content = sample_points_binary
+        #  force requests.get à retourner cette réponse
         mock_get.return_value = mock_response
+        # donne ce mock au test
         yield mock_get
 
 @pytest.fixture
-def mock_get_pointset_error(status_code, content):
-    with patch('triangulator.api.requests.get') as mock_get:
-        mock_response = requests.models.Response()
-        mock_response.status_code = status_code
-        mock_response._content = content
-        mock_get.return_value = mock_response
-        yield mock_get
-
-@patch('TP.triangulator.core.triangulate', return_value=[(0, 1, 2)])
-def test_triangulator_success(mock_triangulate, mock_get_pointset_success):
-    pointset_id = "123e4567-e89b-12d3-a456-426614174000"
-    triangles = get_triangulation_from_pointset_manager(pointset_id)
-    mock_get_pointset_success.assert_called_once()
-    mock_triangulate.assert_called_once()
-    assert triangles == [(0, 1, 2)]
-
-def test_triangulator_404():
-    pointset_id = "nonexistent-id"
-    with patch('triangulator.api.requests.get') as mock_get:
+def mock_pointset_manager_404():
+    """Mock 404 response from PointSetManager"""
+    with patch('TP.triangulator.api.requests.get') as mock_get:
         mock_response = requests.models.Response()
         mock_response.status_code = 404
         mock_response._content = b'{"code":"NOT_FOUND","message":"PointSet not found"}'
         mock_get.return_value = mock_response
-        with pytest.raises(requests.exceptions.HTTPError):
-            get_triangulation_from_pointset_manager(pointset_id)
+        yield mock_get
 
+@pytest.fixture
+def mock_pointset_manager_500():
+    """Mock 500 response from PointSetManager"""
+    with patch('TP.triangulator.api.requests.get') as mock_get:
+        mock_response = requests.models.Response()
+        mock_response.status_code = 500
+        mock_response._content = b'{"code":"INTERNAL_ERROR","message":"Server error"}'
+        mock_get.return_value = mock_response
+        yield mock_get
+
+@pytest.fixture
+def mock_pointset_manager_timeout():
+    """Mock timeout from PointSetManager"""
+    with patch('TP.triangulator.api.requests.get') as mock_get:
+        mock_get.side_effect = requests.exceptions.Timeout("Connection timeout")
+        yield mock_get
+
+# Tests d'intégration: API complète + triangulation
+def test_integration_full_flow_success(client, mock_pointset_manager_success):
+    """Test complet: récupération du PointSet + triangulation + retour binaire"""
+    pointset_id = "123e4567-e89b-12d3-a456-426614174000"
+
+    response = client.get(f'/triangulation/{pointset_id}')
+
+    # Vérifier que le PointSetManager a bien été appelé
+    mock_pointset_manager_success.assert_called_once()
+    assert f"/pointset/{pointset_id}" in mock_pointset_manager_success.call_args[0][0]
+
+    # Vérifier la réponse
+    assert response.status_code == 200
+    assert isinstance(response.data, bytes)
+    assert len(response.data) > 0
+
+def test_integration_pointset_not_found(client, mock_pointset_manager_404):
+    """Test d'intégration: PointSet non trouvé"""
+    pointset_id = "00000000-0000-0000-0000-000000000000"
+
+    response = client.get(f'/triangulation/{pointset_id}')
+
+    assert response.status_code == 404
+    json_data = response.get_json()
+    assert "code" in json_data
+    assert "message" in json_data
+
+def test_integration_pointset_manager_error(client, mock_pointset_manager_500):
+    """Test d'intégration: erreur du PointSetManager"""
+    pointset_id = "123e4567-e89b-12d3-a456-426614174000"
+
+    response = client.get(f'/triangulation/{pointset_id}')
+
+    assert response.status_code == 503
+    json_data = response.get_json()
+    assert "code" in json_data
+    assert "message" in json_data
+
+def test_integration_pointset_manager_timeout(client, mock_pointset_manager_timeout):
+    """Test d'intégration: timeout du PointSetManager"""
+    pointset_id = "123e4567-e89b-12d3-a456-426614174000"
+
+    response = client.get(f'/triangulation/{pointset_id}')
+
+    assert response.status_code == 503
+    json_data = response.get_json()
+    assert "code" in json_data
+    assert json_data["code"] == "POINT_SET_MANAGER_UNAVAILABLE"
+
+def test_integration_invalid_uuid(client):
+    """Test d'intégration: UUID invalide"""
+    pointset_id = "invalid-uuid-format"
+
+    response = client.get(f'/triangulation/{pointset_id}')
+
+    assert response.status_code == 400
+    json_data = response.get_json()
+    assert json_data["code"] == "INVALID_UUID"
+
+def test_integration_triangulation_flow(client, mock_pointset_manager_success):
+    """Test d'intégration: vérifier le flux complet de triangulation"""
+    pointset_id = "123e4567-e89b-12d3-a456-426614174000"
+
+    # Appeler l'API avec le mock du PointSetManager
+    response = client.get(f'/triangulation/{pointset_id}')
+
+    # Vérifier que la réponse est correcte
+    assert response.status_code == 200
+    assert isinstance(response.data, bytes)
+
+    # Vérifier que le PointSetManager a été appelé avec le bon ID
+    mock_pointset_manager_success.assert_called_once()
+    call_args = mock_pointset_manager_success.call_args[0][0]
+    assert pointset_id in call_args
+
+def test_integration_end_to_end_with_real_data(client, mock_pointset_manager_success):
+    """Test end-to-end avec données réelles"""
+    pointset_id = "123e4567-e89b-12d3-a456-426614174000"
+
+    # Appel de l'API
+    response = client.get(f'/triangulation/{pointset_id}')
+
+    # Vérifications
+    assert response.status_code == 200
+    assert response.content_type == "application/octet-stream"
+
+    # Vérifier que le mock a été utilisé
+    mock_pointset_manager_success.assert_called_once()
